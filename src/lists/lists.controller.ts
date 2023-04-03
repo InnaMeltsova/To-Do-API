@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Delete, Put, Body, Param, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
 import { ListsService } from './lists.service';
-import { List } from './interfaces/list.interface';
 import { CreateListDto, UpdateListDto } from './dto/lists.dto';
 
 @Controller('lists')
@@ -8,41 +7,22 @@ export class ListsController {
     constructor(private readonly listsService: ListsService) { }
 
     @Get()
-    async getLists(@Res() response): Promise<List[]> {
-        try {
-            const lists = await this.listsService.getLists();
-            return response.status(HttpStatus.OK).json({lists});
-           } catch (err) {
-            return response.status(err.status).json(err.response);
-           }
+    async getLists() {
+        await this.listsService.getLists();
     }
 
     @Post('new')
-    async createList(@Res() response, @Body() createListDTO: CreateListDto ): Promise<List> {
-        try {
-            const list = await this.listsService.createList(createListDTO);
-            return response.status(HttpStatus.CREATED).json({list});
-         } catch (err) {
-            return response.status(HttpStatus.BAD_REQUEST).json({
-            statusCode: 400,
-            message: 'Error: List not created!',
-            error: 'Bad Request'
-         });
-         }
+    async createList(@Body() createListDTO: CreateListDto ) {
+        await this.listsService.createList(createListDTO);
     }
 
     @Put(':id')
-    async updateList(@Res() response, @Param('id') id: string, @Body() updateListDto: UpdateListDto): Promise<List> {
-        try {
-            const list = await this.listsService.updateList(id, updateListDto);
-            return response.status(HttpStatus.OK).json({list});
-        } catch (err) {
-            return response.status(err.status).json(err.response);
-        }
+    async updateList(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
+        await this.listsService.updateList(id, updateListDto);
     }
 
     @Delete(':id')
-    async deleteList(@Param('id') id: string): Promise<void> {
+    async deleteList(@Param('id') id: string) {
         await this.listsService.deleteList(id);
     }
 }
