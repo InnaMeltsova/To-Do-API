@@ -5,6 +5,8 @@ services:
     build: .
     container_name: server
     restart: always
+    volumes: #allows share data between the host machine and containers(- <host-path>:<container-path>), don't need to rebuild containers
+      - ./src:/usr/src/app
     ports: 
       - 5000:5000
     env_file: 
@@ -15,7 +17,7 @@ services:
     container_name: mongodb
     restart: always
     volumes:
-      - ./.db/mongodata:/data
+      - ./.db/mongodata:/data/db
     env_file:
       - .env
     environment:
